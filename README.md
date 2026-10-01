@@ -1,6 +1,6 @@
 # Sectionist
 
-Sectionist is a cross-platform desktop text editor for Windows and Linux, built around **sections** instead of traditional editor tabs.
+Sectionist is a cross-platform desktop text editor, markdown viewer and file launcher for Windows and Linux, built around **sections** instead of traditional editor tabs.
 
 ![Sectionist screenshot](screenshot.png)
 
