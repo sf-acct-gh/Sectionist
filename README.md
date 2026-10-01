@@ -29,9 +29,9 @@ There's intentionally no project/workspace concept and no second tab strip. The 
 
 ## Current status
 
-Sectionist is early and functional: sections, file management, editing, saving, persistence, spell check, and multi-encoding support all work end-to-end on Linux, with Windows and Linux Mint as the primary target platforms.
+Sectionist is early but fully functional: sections, file management, editing, saving, persistence, spell check, and multi-encoding support all work end-to-end on Linux and Windows. Development platform was Omarchy Linux. Tested and working on Linux systems with both X11 and Wayland display servers.
 
-See `TODO.md` for the backlog and known limitations, and `CHANGELOG.md` for a detailed history of what's been built.
+Build environment for Linux uses docker with Ubuntu 22.04 (the oldest Ubuntu LTS with `libwebkit2gtk-4.1-dev` available (a hard requirement for Tauri v2).
 
 ## Tech stack
 
