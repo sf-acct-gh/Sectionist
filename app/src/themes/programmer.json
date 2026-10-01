@@ -1,0 +1,24 @@
+{
+  "id": "programmer",
+  "name": "Programmer",
+  "scheme": "dark",
+  "colors": {
+    "text": "#f2f2f2",
+    "text-muted": "#808080",
+    "bg": "#000000",
+    "pane-bg": "#0a0a0a",
+    "border": "#2a2a2a",
+    "accent": "#00b894",
+    "active-file": "#33ff33",
+    "dirty": "#ffa500",
+    "file-issue": "#ff5555",
+    "launch": "#5c9eff",
+    "drop-target-bg": "rgba(51, 255, 51, 0.08)",
+    "editor-selection-bg": "rgba(0, 184, 148, 0.35)",
+    "readonly-bg": "#111111",
+    "readonly-gutter-bg": "#1a1a1a",
+    "warning-bg": "#332b00",
+    "warning-border": "#806000",
+    "editor-text": "#33ff33"
+  }
+}

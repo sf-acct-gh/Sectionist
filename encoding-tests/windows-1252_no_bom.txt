@@ -1,0 +1,7 @@
+Windows-1252 test file for Sectionist encoding support.
+
+Accented Latin: café, naïve, jalapeño, Zürich, façade, résumé.
+Curly quotes and dashes: "quoted text" — an em dash, and a — en dash too.
+Symbols: © ® ™ ± ½ ¼ € £ ¥
+
+If this text displays correctly with no mangled characters, decoding worked.

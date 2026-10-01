@@ -1,0 +1,499 @@
+/* Every color below (--text, --bg, --accent, etc.) is deliberately NOT
+   defined here. They're owned entirely by the active theme file
+   (app/src/themes/*.json, applied via theme.ts) so that even the built-in
+   Light theme is "just a theme file" like any other, with nothing baked
+   into the stylesheet to fall out of sync with it. theme.ts applies the
+   chosen theme's variables before the app's DOM is ever built, so there's
+   no unstyled flash on startup. */
+:root {
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, "Courier New", monospace;
+
+  font: 14px/1.4 var(--sans);
+  color: var(--text);
+  background: var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#layout {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* ---- Sections pane ---------------------------------------------------- */
+
+#sections-pane {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  max-width: 600px;
+  background: var(--pane-bg);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+#sections-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.section {
+  border-bottom: 1px solid var(--border);
+}
+
+.section.drop-before {
+  box-shadow: inset 0 2px 0 0 var(--accent);
+}
+
+.section.drop-after {
+  box-shadow: inset 0 -2px 0 0 var(--accent);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  cursor: grab;
+  user-select: none;
+}
+
+.section-header:active {
+  cursor: grabbing;
+}
+
+.section-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.section-body {
+  padding: 2px 0 8px;
+  min-height: 4px;
+}
+
+.section-body.drop-target,
+.section.drop-target > .section-header {
+  background: var(--drop-target-bg);
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px 3px 22px;
+  cursor: pointer;
+}
+
+.file-row:hover {
+  background: var(--drop-target-bg);
+}
+
+.file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Some WebKitGTK builds don't honor a child's draggable="false" against a
+     draggable="true" ancestor (the row, for section reordering / move-between-
+     sections); this is the documented WebKit-specific backstop so clicking the
+     name reliably opens the file instead of being swallowed by drag detection. */
+  -webkit-user-drag: none;
+}
+
+.file-name.active {
+  font-weight: 700;
+  color: var(--active-file);
+}
+
+.file-name.dirty {
+  color: var(--dirty);
+}
+
+.file-name.launchable {
+  color: var(--launch);
+}
+
+/* Wins over .active (green), .dirty (orange), and .launchable (blue): a file
+   that's no longer on disk or was changed by another editor needs attention
+   more urgently than any of those, regardless of which else also applies.
+   This must come after .launchable in source order — equal specificity (two
+   classes each) means the later rule wins, and a launchable file missing
+   from disk carries both classes at once. */
+.file-name.file-issue {
+  color: var(--file-issue);
+}
+
+.icon-btn {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  border: none;
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--text-muted);
+  /* Same WebKitGTK draggable-ancestor backstop as .file-name: these buttons sit
+     inside a draggable section header or file row. */
+  -webkit-user-drag: none;
+}
+
+.icon-btn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.disclosure {
+  font-size: 11px;
+}
+
+.section-list-tail {
+  min-height: 24px;
+}
+
+#sections-footer {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid var(--border);
+}
+
+#sections-footer button {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  cursor: pointer;
+}
+
+#sections-footer button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+#sections-footer button:hover {
+  filter: brightness(0.95);
+}
+
+/* ---- Resizer ------------------------------------------------------------ */
+
+#pane-resizer {
+  flex: 0 0 4px;
+  cursor: col-resize;
+  background: var(--border);
+}
+
+#pane-resizer:hover {
+  background: var(--accent);
+}
+
+/* ---- Editor pane -------------------------------------------------------- */
+
+#editor-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+#editor-host {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#editor-host .cm-editor {
+  flex: 1;
+  min-height: 0;
+}
+
+.editor-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+/* ---- File issue banner (unavailable / externally changed) --------------- */
+
+.file-issue-banner {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--warning-bg);
+  border-bottom: 1px solid var(--warning-border);
+}
+
+.file-issue-banner-text {
+  flex: 1;
+  color: var(--text);
+}
+
+.file-issue-banner button {
+  flex: 0 0 auto;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.file-issue-banner button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ---- Markdown rendered view ---------------------------------------------- */
+
+.markdown-rendered {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px 24px;
+  background: var(--bg);
+}
+
+.markdown-rendered h1,
+.markdown-rendered h2,
+.markdown-rendered h3,
+.markdown-rendered h4,
+.markdown-rendered h5,
+.markdown-rendered h6 {
+  margin: 1.2em 0 0.5em;
+  line-height: 1.25;
+}
+
+.markdown-rendered h1:first-child,
+.markdown-rendered h2:first-child,
+.markdown-rendered h3:first-child {
+  margin-top: 0;
+}
+
+.markdown-rendered p,
+.markdown-rendered ul,
+.markdown-rendered ol {
+  margin: 0.6em 0;
+  line-height: 1.5;
+}
+
+.markdown-rendered code {
+  font-family: var(--mono);
+  background: var(--pane-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.markdown-rendered pre {
+  background: var(--pane-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  overflow-x: auto;
+}
+
+.markdown-rendered pre code {
+  background: none;
+  padding: 0;
+}
+
+.markdown-rendered blockquote {
+  margin: 0.6em 0;
+  padding: 2px 12px;
+  border-left: 3px solid var(--border);
+  color: var(--text-muted);
+}
+
+.markdown-rendered table {
+  border-collapse: collapse;
+  margin: 0.6em 0;
+}
+
+.markdown-rendered th,
+.markdown-rendered td {
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+}
+
+.markdown-rendered a {
+  color: var(--accent);
+}
+
+.markdown-rendered img {
+  max-width: 100%;
+}
+
+/* ---- Status bar --------------------------------------------------------- */
+
+#status-bar {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 10px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  background: var(--pane-bg);
+}
+
+/* ---- Modal dialog --------------------------------------------------------- */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-dialog {
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 16px;
+  min-width: 320px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-dialog h2 {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.modal-dialog label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.modal-dialog input,
+.modal-dialog select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font: inherit;
+  margin-bottom: 16px;
+}
+
+.modal-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.modal-checkbox-row input[type="checkbox"] {
+  width: auto;
+  margin-bottom: 0;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.modal-buttons button {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.modal-buttons button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.modal-buttons button.reset {
+  margin-right: auto;
+}
+
+/* ---- Spell check suggestion menu ------------------------------------------ */
+
+.spellcheck-menu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 160px;
+  max-width: 280px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 4px;
+  font-size: 13px;
+}
+
+.spellcheck-menu-item {
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spellcheck-menu-item:hover {
+  background: var(--drop-target-bg);
+}
+
+.spellcheck-menu-empty {
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.spellcheck-menu-empty:hover {
+  background: none;
+}
+
+.spellcheck-menu-separator {
+  height: 1px;
+  margin: 4px 2px;
+  background: var(--border);
+}

@@ -1,0 +1,24 @@
+{
+  "id": "light",
+  "name": "Light",
+  "scheme": "light",
+  "colors": {
+    "text": "#1a1a1a",
+    "text-muted": "#6b6b6b",
+    "bg": "#ffffff",
+    "pane-bg": "#fafafa",
+    "border": "#d8d8d8",
+    "accent": "#2563eb",
+    "active-file": "#15803d",
+    "dirty": "#d9730d",
+    "file-issue": "#dc2626",
+    "launch": "#1d4ed8",
+    "drop-target-bg": "rgba(37, 99, 235, 0.08)",
+    "editor-selection-bg": "rgba(37, 99, 235, 0.25)",
+    "readonly-bg": "#ececec",
+    "readonly-gutter-bg": "#e2e2e2",
+    "warning-bg": "#fff7e6",
+    "warning-border": "#f0c36d",
+    "editor-text": "#1a1a1a"
+  }
+}

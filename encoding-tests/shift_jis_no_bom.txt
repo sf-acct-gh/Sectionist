@@ -1,0 +1,7 @@
+Shift-JIS (CP932) test file for Sectionist encoding support.
+
+こんにちは、世界！これはシフトJISのテストファイルです。
+日本語のテキストが正しく表示されれば、デコードは成功しています。
+東京、大阪、京都。
+
+If this text displays correctly with no mangled characters, decoding worked.

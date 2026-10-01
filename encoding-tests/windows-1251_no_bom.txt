@@ -1,0 +1,7 @@
+Windows-1251 (Cyrillic) test file for Sectionist encoding support.
+
+Привет, мир! Это тестовый файл в кодировке Windows-1251.
+Быстрая лиса перепрыгивает через ленивую собаку.
+Москва, Санкт-Петербург, Новосибирск.
+
+If this text displays correctly with no mangled characters, decoding worked.

@@ -1,0 +1,24 @@
+{
+  "id": "dark",
+  "name": "Dark",
+  "scheme": "dark",
+  "colors": {
+    "text": "#e0e0e0",
+    "text-muted": "#9a9a9a",
+    "bg": "#1e1e1e",
+    "pane-bg": "#252526",
+    "border": "#3c3c3c",
+    "accent": "#3b82f6",
+    "active-file": "#4ade80",
+    "dirty": "#f5a742",
+    "file-issue": "#f87171",
+    "launch": "#60a5fa",
+    "drop-target-bg": "rgba(59, 130, 246, 0.15)",
+    "editor-selection-bg": "rgba(59, 130, 246, 0.35)",
+    "readonly-bg": "#2a2a2a",
+    "readonly-gutter-bg": "#262626",
+    "warning-bg": "#3a2f14",
+    "warning-border": "#7a5c1e",
+    "editor-text": "#e0e0e0"
+  }
+}

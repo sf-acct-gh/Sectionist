@@ -1,0 +1,24 @@
+{
+  "id": "vscode",
+  "name": "VS Code",
+  "scheme": "dark",
+  "colors": {
+    "text": "#d4d4d4",
+    "text-muted": "#969696",
+    "bg": "#1e1e1e",
+    "pane-bg": "#252526",
+    "border": "#454545",
+    "accent": "#007acc",
+    "active-file": "#89d185",
+    "dirty": "#e2c08d",
+    "file-issue": "#f14c4c",
+    "launch": "#3794ff",
+    "drop-target-bg": "rgba(38, 79, 120, 0.5)",
+    "editor-selection-bg": "rgba(38, 79, 120, 0.65)",
+    "readonly-bg": "#2d2d2d",
+    "readonly-gutter-bg": "#242424",
+    "warning-bg": "#352a05",
+    "warning-border": "#b89500",
+    "editor-text": "#d4d4d4"
+  }
+}
