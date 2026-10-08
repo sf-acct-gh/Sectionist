@@ -8,7 +8,7 @@ import { openPreferences } from "./ui/preferences";
 import {
   onMenuAction,
   onOpenFileRequest,
-  pickFileToAdd,
+  pickFilesToAdd,
   pickSaveLocation,
   setEncodingChecked,
   setEncodingMenuEnabled,
@@ -455,15 +455,25 @@ async function main() {
     store.createUnsavedFileInSection(sectionId);
   }
 
+  /** File > Open File supports selecting more than one file at once; all of
+   * them go into whichever section the user picks for the batch. As with
+   * the section header's own "+" add-file button, selecting a single file
+   * keeps the normal behavior of activating it, while selecting several at
+   * once leaves the active file alone instead of jumping once per file. */
   async function handleOpenFile() {
-    const target = await pickFileToAdd();
-    if (!target) return;
-    await handleIncomingFilePath(target);
+    const targets = await pickFilesToAdd();
+    if (targets.length === 0) return;
+    const sectionId = await chooseSectionForNewFile();
+    if (!sectionId) return;
+    const activate = targets.length === 1;
+    for (const path of targets) {
+      store.addFileToSection(sectionId, path, activate);
+    }
   }
 
-  /** Shared placement flow for every way an existing file can arrive in
-   * Sectionist: the Open File menu action, and an OS file association /
-   * single-instance forward. Cancel at any step leaves Sectionist untouched.
+  /** Shared placement flow for every way a single existing file can arrive
+   * in Sectionist: an OS file association / single-instance forward (always
+   * exactly one path). Cancel at any step leaves Sectionist untouched.
    * `Store.addFileToSection` already only activates the file when it's plain
    * text/Markdown, so no extra active-file logic is needed here. */
   async function handleIncomingFilePath(path: string) {

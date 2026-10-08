@@ -309,15 +309,20 @@ export class Store {
 
   /** Adds an existing file (chosen via picker or drag-and-drop) to a
    * section. Returns the resulting reference, which may be a pre-existing
-   * one if this path was already present in the section. */
-  addFileToSection(sectionId: string, path: string): FileRef | null {
+   * one if this path was already present in the section.
+   *
+   * `activate` defaults to true (the normal single-file behavior: an
+   * editable file becomes active immediately). Pass false when adding
+   * several files at once via a multi-select picker, so focus stays on
+   * whatever was already active instead of jumping around once per file. */
+  addFileToSection(sectionId: string, path: string, activate = true): FileRef | null {
     const section = this.getSection(sectionId);
     if (!section) return null;
 
     const id = canonicalKey(path);
     const existing = section.files.find((f) => f.id === id);
     if (existing) {
-      if (existing.kind === "editable") {
+      if (activate && existing.kind === "editable") {
         void this.setActiveFile(existing.id);
       }
       return existing;
@@ -330,7 +335,7 @@ export class Store {
     };
     section.files.push(ref);
     this.persistState();
-    if (ref.kind === "editable") {
+    if (activate && ref.kind === "editable") {
       void this.setActiveFile(ref.id);
     } else {
       this.startWatching(path);

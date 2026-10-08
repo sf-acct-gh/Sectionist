@@ -246,6 +246,31 @@ describe("file membership", () => {
     expect(store.getActiveFileId()).toBe(textRef.id);
   });
 
+  it("passing activate=false adds a new editable file without changing the active file", async () => {
+    disk.set("/notes/a.txt", "hello");
+    disk.set("/notes/b.txt", "world");
+    const store = await newStore();
+    const section = store.createSection("A");
+    const first = store.addFileToSection(section.id, "/notes/a.txt")!;
+    store.addFileToSection(section.id, "/notes/b.txt", false);
+
+    expect(store.getActiveFileId()).toBe(first.id);
+    expect(store.getSection(section.id)?.files).toHaveLength(2);
+  });
+
+  it("passing activate=false for an already-present file does not switch to it", async () => {
+    disk.set("/notes/a.txt", "hello");
+    disk.set("/notes/b.txt", "world");
+    const store = await newStore();
+    const section = store.createSection("A");
+    const first = store.addFileToSection(section.id, "/notes/a.txt")!;
+    store.addFileToSection(section.id, "/notes/b.txt")!;
+
+    store.addFileToSection(section.id, "/notes/a.txt", false);
+
+    expect(store.getActiveFileId()).not.toBe(first.id);
+  });
+
   it("flags a launchable file missing from disk at startup", async () => {
     vi.mocked(persistence.loadState).mockResolvedValueOnce({
       version: 1,

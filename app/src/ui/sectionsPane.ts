@@ -5,7 +5,7 @@
 import type { Store } from "../store";
 import type { FileRef, SectionData } from "../types";
 import { confirmAction, promptText } from "./dialogs";
-import { pickFileToAdd, launchPath, showError } from "../native";
+import { pickFilesToAdd, launchPath, showError } from "../native";
 import { displayName } from "../paths";
 
 const SECTION_DRAG_MIME = "application/x-sectionist-section";
@@ -123,8 +123,14 @@ export class SectionsPane {
     });
 
     const addBtn = this.iconButton("+", "Add file", async () => {
-      const path = await pickFileToAdd();
-      if (path) this.store.addFileToSection(section.id, path);
+      const paths = await pickFilesToAdd();
+      // Selecting a single file keeps the existing behavior of switching
+      // focus to it. Selecting several at once leaves the active file
+      // alone instead of jumping once per added file.
+      const activate = paths.length === 1;
+      for (const path of paths) {
+        this.store.addFileToSection(section.id, path, activate);
+      }
     });
 
     header.append(disclosure, name, renameBtn, closeBtn, newFileBtn, addBtn);

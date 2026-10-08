@@ -156,6 +156,14 @@ export async function pickFileToAdd(): Promise<string | null> {
   return Array.isArray(result) ? result[0] ?? null : result;
 }
 
+/** Opens the OS file picker for adding one or more existing files to a
+ * section at once. Returns an empty array if the picker was cancelled. */
+export async function pickFilesToAdd(): Promise<string[]> {
+  const result = await openDialog({ multiple: true, directory: false });
+  if (!result) return [];
+  return Array.isArray(result) ? result : [result];
+}
+
 /** Opens the OS save dialog, used by both New File and Save As. */
 export async function pickSaveLocation(defaultName?: string): Promise<string | null> {
   let defaultPath = defaultName;
