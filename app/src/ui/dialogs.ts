@@ -1,9 +1,9 @@
-// Tauri's dialog plugin only exposes native message/confirm/file dialogs —
-// there is no native "prompt for text" dialog. Section naming/renaming
-// needs one, so this is a small in-app modal (confirms with OK or Enter, as
-// AGENTS.md requires).
+// Tauri's native message/confirm dialogs map their warning/error/info icons
+// to OS system sounds on Windows (tied to the user's sound scheme) — there's
+// no "kind" that suppresses this. Sectionist is meant to be silent in every
+// OS, so all confirm/prompt/message dialogs are in-app HTML modals instead of
+// the native plugin (confirms with OK or Enter, as AGENTS.md requires).
 
-import { ask } from "@tauri-apps/plugin-dialog";
 import type { SectionData } from "../types";
 
 export function promptText(options: {
@@ -67,12 +67,105 @@ export function promptText(options: {
   });
 }
 
-export async function confirmAction(
+export function confirmAction(
   message: string,
   title = "Sectionist",
   labels?: { okLabel?: string; cancelLabel?: string },
 ): Promise<boolean> {
-  return ask(message, { title, kind: "warning", ...labels });
+  return new Promise((resolve) => {
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+
+    const dialog = document.createElement("div");
+    dialog.className = "modal-dialog";
+
+    const heading = document.createElement("h2");
+    heading.textContent = title;
+
+    const body = document.createElement("p");
+    body.className = "modal-message";
+    body.textContent = message;
+
+    const buttons = document.createElement("div");
+    buttons.className = "modal-buttons";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.textContent = labels?.cancelLabel ?? "Cancel";
+    cancelBtn.className = "secondary";
+
+    const okBtn = document.createElement("button");
+    okBtn.textContent = labels?.okLabel ?? "OK";
+    okBtn.className = "primary";
+
+    buttons.append(cancelBtn, okBtn);
+    dialog.append(heading, body, buttons);
+    overlay.append(dialog);
+    document.body.append(overlay);
+
+    okBtn.focus();
+
+    function close(result: boolean) {
+      overlay.remove();
+      resolve(result);
+    }
+
+    okBtn.addEventListener("click", () => close(true));
+    cancelBtn.addEventListener("click", () => close(false));
+    overlay.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") close(true);
+      if (e.key === "Escape") close(false);
+    });
+    overlay.addEventListener("mousedown", (e) => {
+      if (e.target === overlay) close(false);
+    });
+  });
+}
+
+/** OK-only in-app replacement for Tauri's native message dialog (used by
+ * native.ts's showMessage/showError) — see the file-level note on why
+ * nothing here uses the native dialog plugin. */
+export function alertMessage(message: string, title = "Sectionist"): Promise<void> {
+  return new Promise((resolve) => {
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+
+    const dialog = document.createElement("div");
+    dialog.className = "modal-dialog";
+
+    const heading = document.createElement("h2");
+    heading.textContent = title;
+
+    const body = document.createElement("p");
+    body.className = "modal-message";
+    body.textContent = message;
+
+    const buttons = document.createElement("div");
+    buttons.className = "modal-buttons";
+
+    const okBtn = document.createElement("button");
+    okBtn.textContent = "OK";
+    okBtn.className = "primary";
+
+    buttons.append(okBtn);
+    dialog.append(heading, body, buttons);
+    overlay.append(dialog);
+    document.body.append(overlay);
+
+    okBtn.focus();
+
+    function close() {
+      overlay.remove();
+      resolve();
+    }
+
+    okBtn.addEventListener("click", close);
+    overlay.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === "Escape") close();
+    });
+    overlay.addEventListener("mousedown", (e) => {
+      if (e.target === overlay) close();
+    });
+  });
 }
 
 /** Asks where an incoming file should go: an existing section (picked from

@@ -5,7 +5,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { homeDir } from "@tauri-apps/api/path";
-import { open as openDialog, save as saveDialog, message as messageDialog } from "@tauri-apps/plugin-dialog";
+import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
+import { alertMessage } from "./ui/dialogs";
 
 /** Linux's own file-chooser tends to fall back to an unhelpful tmp
  * directory unless given an explicit starting location - default to the
@@ -167,9 +168,9 @@ export async function pickSaveLocation(defaultName?: string): Promise<string | n
 }
 
 export async function showMessage(text: string, title = "Sectionist"): Promise<void> {
-  await messageDialog(text, { title, kind: "info" });
+  await alertMessage(text, title);
 }
 
 export async function showError(text: string, title = "Sectionist"): Promise<void> {
-  await messageDialog(text, { title, kind: "error" });
+  await alertMessage(text, title);
 }

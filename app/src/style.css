@@ -399,6 +399,14 @@ button {
   font-size: 14px;
 }
 
+.modal-message {
+  margin: 0 0 16px;
+  max-width: 420px;
+  font-size: 13px;
+  color: var(--text);
+  white-space: pre-line;
+}
+
 .modal-dialog label {
   display: block;
   font-size: 12px;
